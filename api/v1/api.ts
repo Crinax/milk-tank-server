@@ -19,7 +19,7 @@ class API {
       return APIResponse.error(500, 'Cannot connect to database');
     }
 
-    if (Tanks.length === 0)
+    if ((await Tanks.find()).length === 0)
       if (!(await API.createTanks()))
         return APIResponse.error(500, 'Cannot create tanks. Check server log file');
 
@@ -56,7 +56,10 @@ class API {
     }
   }
 
-  public static async auth(name: string): Promise<APIResponse> {
+  public static async auth(name?: string): Promise<APIResponse> {
+    if (!name)
+      return APIResponse.error(400, 'Request should have "name" option');
+
     const pouringer = new Users({ name });
     try {
       await pouringer.save();
@@ -72,16 +75,21 @@ class API {
     }
   }
 
-  public static async fillTank(id: Schema.Types.ObjectId, litters: number): Promise<APIResponse> {
+  public static async fillTank(id?: Schema.Types.ObjectId, litters?: number): Promise<APIResponse> {
+    if (!id || !litters)
+      return APIResponse.error(400, 'Request should have "litters" option');
+    if (litters < 1 || litters % 1 !== 0)
+      return APIResponse.error(415, '"litters" options should be positive integer number');
+
     const incompleteTank = await Tanks.findOne({ litters: { $lt: 300 } });
     
     if (incompleteTank) {
       const requiredLitters = 300 - incompleteTank.litters;
-      const maxVolumeToFill = requiredLitters < litters ? litters - requiredLitters : litters;
+      const littersToFill = requiredLitters < litters ? requiredLitters : litters
 
-      if (!await API.updateTank(incompleteTank._id, maxVolumeToFill))
+      if (!await API.updateTank(incompleteTank._id, incompleteTank.litters + littersToFill))
         return APIResponse.error(500, 'Cannot update tank. Check server log file');
-      if (!await API.addRecord(id, maxVolumeToFill, incompleteTank._id))
+      if (!await API.addRecord(id, littersToFill, incompleteTank._id))
         return APIResponse.error(500, 'Cannot add record to journal. Check server log file');
       
       if (requiredLitters < litters)

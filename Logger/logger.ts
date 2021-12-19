@@ -6,12 +6,13 @@ class Logger {
 
   public static init(): Logger {
     const fileName = new Date().toISOString();
-    Logger.filePath = `../logs/${fileName}.log`
+    Logger.filePath = `./logs/${fileName}.log`
 
     try {
-      fs.writeFileSync(Logger.filePath, '');
+      fs.closeSync(fs.openSync(Logger.filePath, 'w'));
 
       console.log(`[Logger] Created log file: ${Logger.filePath.slice(2)}`);
+      Logger.log('File created');
     } catch (err) {
       console.log('[Logger] Error creating log file ', err);
     }
@@ -21,7 +22,7 @@ class Logger {
 
   private static append(type: string, text: string) {
     try {
-      fs.appendFileSync(Logger.filePath, `[${type}] ${text} | ${new Date().toISOString()}`)
+      fs.appendFileSync(Logger.filePath, `[${type}] ${text} | ${new Date().toISOString()}\n`)
     } catch (err) {
       console.log('[Logger] File append error ', err);
     }
