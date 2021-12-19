@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "express": "^4.17.2",
+    "mongoose": "^6.1.2",
+    "morgan": "^1.10.0",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
+  },
+  "name": "milk-tank-server",
+  "version": "1.0.0",
+  "main": "main.ts",
+  "repository": "https://github.com/Crinax/milk-tank-server.git",
+  "author": "Crinax <agreedeth@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "serve": "ts-node server.ts",
+    "compile": "npx tsc server.ts && node server.js"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/morgan": "^1.9.3",
+    "@types/node": "^17.0.0"
+  }
+}
