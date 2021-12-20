@@ -33,11 +33,11 @@ class Logger {
   }
 
   public static warn(text: string) {
-    Logger.append('warn', text);
+    Logger.append('WARN', text);
   }
 
   public static error(text: string) {
-    Logger.append('error', text);
+    Logger.append('ERROR', text);
   }
 }
 
