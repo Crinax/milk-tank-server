@@ -43,7 +43,7 @@ class API {
 
   public static async getUsers() {
     try {
-      const users = await Users.find();
+      const users = await Users.find().populate('journal');
 
       Logger.log('Users sended successfully');
 
