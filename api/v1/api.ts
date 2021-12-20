@@ -28,7 +28,7 @@ class API {
 
   public static async getJournal() {
     try {
-      const journal = await Journal.find().sort(['litters', 1]);
+      const journal = await Journal.find().populate('userId tankId').exec();
 
       Logger.log('Journal sended successfully');
 
@@ -38,21 +38,6 @@ class API {
       console.log(err);
 
       return APIResponse.error(500, 'Cannot get journal');
-    }
-  }
-
-  public static async getUsers() {
-    try {
-      const users = await Users.find().populate('journal');
-
-      Logger.log('Users sended successfully');
-
-      return APIResponse.ok(users);
-    } catch (err) {
-      Logger.error('Error getting users');
-      console.log(err);
-
-      return APIResponse.error(500, 'Cannot get users');
     }
   }
 
